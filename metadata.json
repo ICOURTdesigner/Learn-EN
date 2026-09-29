@@ -1,0 +1,6 @@
+{
+  "name": "Tamizha English AI",
+  "description": "AI English Teacher Pavi offering Tamil voice classes, locality speaking skills, custom canvas acoustic pronunciation graphs, daily grammar modules, and progress tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
