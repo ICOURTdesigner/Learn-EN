@@ -23,32 +23,44 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
+
+      - name: Set up Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '9.3.1'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
 
-      - name: Install Android SDK packages
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses > /dev/null || true
+
+      - name: Verify build environment
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
-
-      - name: Check Java and Android SDK
-        run: |
+          echo "===== Java ====="
           java -version
+
+          echo "===== Gradle ====="
+          gradle --version
+
+          echo "===== Android SDK ====="
           echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+
+          echo "===== ADB ====="
           adb --version
+
+          echo "===== SDK Packages ====="
           sdkmanager --list_installed
 
       - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
+        run: gradle :app:assembleDebug --stacktrace --no-daemon
 
       - name: Find generated APK
         run: |
-          echo "Generated APK files:"
+          echo "===== Generated APK ====="
           find app/build/outputs/apk -type f -name "*.apk" -print
 
       - name: Upload APK
